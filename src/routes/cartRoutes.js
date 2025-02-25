@@ -1,12 +1,11 @@
-// cart.routes.js
 const express = require("express");
 const {
   getCart,
   createCart,
   updateCart,
   deleteCart,
-} = require("../controllers/cartController"); // Adjust path
-const { verifyToken } = require("../middleware/authMiddleware"); // example auth middleware
+} = require("../controllers/cartController");
+const { verifyToken } = require("../middleware/authMiddleware"); // Use protect
 
 const router = express.Router();
 

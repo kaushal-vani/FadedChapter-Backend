@@ -1,21 +1,24 @@
-// user.routes.js (routes)
 const express = require("express");
 const {
-  registerUser,
-  loginUser,
   getUserById,
   updateUser,
   deleteUser,
   getAllUsers,
-} = require("../controllers/userController"); // Adjust path
+} = require("../controllers/userController");
+const { verifyToken } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.post("/register", registerUser);
-router.post("/login", loginUser);
-router.get("/:id", getUserById);
-router.put("/:id", updateUser);
-router.delete("/:id", deleteUser);
-router.get("/", getAllUsers); //get all users. (admin only)
+// Get user by ID (protected)
+router.get("/:id", verifyToken, getUserById);
+
+// Update user (protected, only the user or admin)
+router.put("/:id", verifyToken, updateUser);
+
+// Delete user (protected, only the user or admin)
+router.delete("/:id", verifyToken, deleteUser);
+
+// Get all users (admin only)
+router.get("/", verifyToken, getAllUsers);
 
 module.exports = router;
