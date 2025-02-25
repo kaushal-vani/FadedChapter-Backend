@@ -10,11 +10,9 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true, // No effect, but safe to keep for older versions
-  useUnifiedTopology: true // No effect, but safe to keep
-}).then(() => console.log('✅ MongoDB Connected Successfully'))
-  .catch(err => console.log('❌ MongoDB Connection Error:', err));
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ MongoDB Connected Successfully'))
+  .catch(err => console.error('❌ MongoDB Connection Error:', err));
 
 // Basic Route
 app.get('/', (req, res) => {
