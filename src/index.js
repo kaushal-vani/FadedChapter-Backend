@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
@@ -8,6 +9,7 @@ const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const authRoutes = require("./routes/authRoutes")
 
 dotenv.config();
 
@@ -24,6 +26,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/auth", authRoutes);
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI, {
