@@ -9,7 +9,7 @@ const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes");
 const orderRoutes = require("./routes/orderRoutes");
-const authRoutes = require("./routes/authRoutes")
+const authRoutes = require("./routes/authRoutes");
 
 dotenv.config();
 
@@ -21,6 +21,10 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.get("/", (req, res) => { // Add this root route
+  res.send("Welcome to the FadedChapter Backend API!");
+});
+
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
@@ -29,10 +33,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/auth", authRoutes);
 
 // Database Connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGO_URI) // Remove deprecated options
   .then(() => console.log("✅ MongoDB Connected Successfully"))
   .catch((err) => console.error("❌ MongoDB Connection Failed:", err));
 
