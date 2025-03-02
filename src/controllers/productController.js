@@ -40,29 +40,25 @@ exports.createProduct = async (req, res) => {
 // Get all products (with pagination and filtering)
 exports.getAllProducts = async (req, res) => {
   try {
-    const { page = 1, limit = 10, category, productType } = req.query;
-    const query = {};
+    const { all } = req.query;
+    let products;
 
-    if (category) query.category = category;
-    if (productType) query.productType = productType;
+    if (all === "true") {
+      products = await Product.find(); // Fetch all products
+    } else {
+      const { page = 1, limit = 10 } = req.query;
+      products = await Product.find()
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .exec();
+    }
 
-    const products = await Product.find(query)
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
-      .exec();
-
-    const count = await Product.countDocuments(query);
-
-    res.json({
-      products,
-      totalPages: Math.ceil(count / limit),
-      currentPage: page,
-    });
+    res.json({ products });
   } catch (error) {
-    console.error("Error getting products:", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Error fetching products" });
   }
 };
+
 
 // Get a single product by ID
 exports.getProductById = async (req, res) => {
@@ -204,3 +200,37 @@ exports.getCollaboration = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Search products by query (name, category, color, etc.)
+exports.searchProducts = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    if (!query) {
+      return res.status(400).json({ message: "Search query is required" });
+    }
+
+    const searchRegex = new RegExp(query, "i");
+
+    const products = await Product.find({
+      $or: [
+        { name: searchRegex },
+        { category: searchRegex },
+        { color: searchRegex },
+        { productType: searchRegex },
+        { fitType: searchRegex }
+      ]
+    });
+
+    if (!products.length) {
+      return res.status(404).json({ message: "No products found" });
+    }
+
+    res.json(products);
+  } catch (error) {
+    console.error("Error searching products:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
